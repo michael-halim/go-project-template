@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  
+  db-go-transactions:
+    container_name: db-go-transactions
+    image: postgres:12
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    env_file:
+      - ./transactions/.env.dev.db
+    ports:
+      - '5432:5432'
+
+  web:
+    container_name: web-go-transactions
+    build:
+      context: ./transactions
+      dockerfile: Dockerfile
+    ports:
+      - "3000:8000"
+    volumes:
+      - "./transactions:/app-transactions"
+    depends_on:
+      - db-go-transactions
+    links:
+      - db-go-transactions
+volumes:
+  postgres_data:
